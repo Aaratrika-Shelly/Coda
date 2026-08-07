@@ -1,4 +1,15 @@
+"use client"
+import {useParams} from "next/navigation";
+import { EditorWrapper } from "@/features/Editor/EditorWrapper";
+
+type PageProps = {
+  params: {
+    roomId: string;
+  };
+};
+
 export default function App() {
+  const { roomId } = useParams<{ roomId: string }>();
   return (
     <div className="h-screen bg-zinc-950 flex flex-col overflow-hidden">
       {/* Header */}
@@ -27,14 +38,15 @@ export default function App() {
         </div>
 
         {/* Editor Container */}
-        <div className="flex-1 bg-zinc-950 flex items-center justify-center text-zinc-500 text-lg">
-          Editor
+        <div className="flex-1 bg-zinc-950">
+          <EditorWrapper roomId={roomId}/>
         </div>
       </div>
 
       {/* Footer */}
       <div className="h-6 bg-zinc-900 border-t border-zinc-800 px-4 flex items-center justify-between text-[10px] text-zinc-500">
         <span>Ready</span>
+        <span>Room: {roomId} </span>
         <span>Language: JavaScript</span>
       </div>
     </div>
