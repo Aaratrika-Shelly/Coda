@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* The background color when someone highlights text */
+.yRemoteSelection {
+  background-color: rgba(100, 150, 250, 0.3) !important;
+}
+
+/* The vertical line for the remote cursor */
+.yRemoteSelectionHead {
+  position: absolute;
+  border-left: 2px solid !important;
+  border-color: inherit !important; /* This takes the color from our JS logic */
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* The little name tag (flag) above the cursor */
+.yRemoteSelectionHead::after {
+  content: "User" !important;
+  position: absolute;
+  top: -1.4em;
+  left: -2px;
+  background-color: inherit !important;
+  color: white !important;
+  font-family: sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 0px 6px;
+  border-radius: 4px 4px 4px 0;
+  white-space: nowrap;
+  display: block !important;
+}
