@@ -1,32 +1,57 @@
 @import "tailwindcss";
 
-/* The background color when someone highlights text */
-.yRemoteSelection {
-  background-color: rgba(100, 150, 250, 0.3) !important;
-}
+/* --- CODA MANUAL SYNC DECORATIONS --- */
 
-/* The vertical line for the remote cursor */
-.yRemoteSelectionHead {
+/* 1. Remote Cursor Line 
+   This creates the thin vertical line for other users.
+*/
+.remote-cursor {
+  width: 2px !important;
+  /* 'inherit' allows us to set the color dynamically via JS */
+  background-color: inherit; 
   position: absolute;
-  border-left: 2px solid !important;
-  border-color: inherit !important; /* This takes the color from our JS logic */
-  height: 100%;
-  box-sizing: border-box;
 }
 
-/* The little name tag (flag) above the cursor */
-.yRemoteSelectionHead::after {
-  content: "User" !important;
+/* 2. Remote User Badge (The Tag)
+   This creates the "User 42" flag that appears above their cursor.
+*/
+.remote-cursor::after {
+  /* We will inject the user name via the 'content' property in JS or use a generic label */
+  content: attr(data-label); 
   position: absolute;
   top: -1.4em;
   left: -2px;
-  background-color: inherit !important;
-  color: white !important;
-  font-family: sans-serif;
+  padding: 0 4px;
+  
+  background-color: inherit;
+  color: white;
+  
+  font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 600;
-  padding: 0px 6px;
-  border-radius: 4px 4px 4px 0;
   white-space: nowrap;
-  display: block !important;
+  border-radius: 4px 4px 4px 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 3. Remote Selection Highlight
+   This colors the background when another user highlights a block of code.
+*/
+.remote-selection {
+  /* We use a lower opacity so the code is still readable */
+  background-color: rgba(65, 132, 228, 0.3);
+}
+
+/* 4. Layout Polish
+   Ensures the Monaco editor doesn't have weird white gaps 
+   on the sides in the Zinc-themed layout.
+*/
+.monaco-editor, .overflow-guard {
+  border-radius: 0px !important;
+}
+
+/* Smooth cursor transition */
+.remote-cursor {
+  transition: all 0.1s ease-out;
 }
