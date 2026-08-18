@@ -8,9 +8,10 @@ import { KeyCode, KeyMod } from "monaco-editor";
 
 type CodeEditorProps = {
   roomId: string;
+  onStatusChange: (status: "connecting" | "connected" | "disconnected"|"synced") => void;
 };
 
-export function CodeEditor({ roomId }: CodeEditorProps) {
+export function CodeEditor({ roomId, onStatusChange }: CodeEditorProps) {
   const editorRef = useRef<any>(null); // Holds Monaco editor
   const docRef = useRef<Y.Doc | null>(null); // Holds Y.Doc
   const providerRef = useRef<WebsocketProvider | null>(null); // Holds WebSocket provider
@@ -37,15 +38,23 @@ export function CodeEditor({ roomId }: CodeEditorProps) {
       ydoc
     );
 
+    const statusHandler = (event: any) => {
+      onStatusChange(event.status);
+    };
+    provider.on("status", statusHandler);
+
     docRef.current = ydoc;
     providerRef.current = provider;
 
     return () => {
+      if(providerRef.current) {
+        provider.off("status", statusHandler); 
         undoManagerRef.current?.destroy();
         provider.destroy();
         ydoc.destroy();
+      }
     };
-  }, [roomId]);
+  }, [roomId, onStatusChange]);
     
   const handleEditorDidMount = (editor: any) => {
 
@@ -59,6 +68,23 @@ export function CodeEditor({ roomId }: CodeEditorProps) {
       const model = editor.getModel();
 
       if (!model) return;
+
+    const syncEditor = () => {
+      const contentFromDB = yText.toString();
+      if (contentFromDB && editor.getValue() !== contentFromDB) {
+        isApplyingRemoteChange.current = true;
+        editor.setValue(contentFromDB);
+        isApplyingRemoteChange.current = false;
+      }
+    };
+
+    // 1. If it's already synced (missed the event), catch up now
+    if (provider.synced) {
+      syncEditor();
+    } else {
+      // 2. Otherwise, wait for the event
+      provider.once("sync", syncEditor);
+    }
 
       // -------------------------------
       // Local (Monaco) -> Remote (Yjs)

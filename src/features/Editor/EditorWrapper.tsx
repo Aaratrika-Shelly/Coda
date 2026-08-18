@@ -17,8 +17,9 @@ const CodeEditor = dynamic(
 
 type EditorWrapperProps = {
   roomId: string;
+  onStatusChange: (status: string) => void;
 };
 
-export function EditorWrapper({ roomId }: EditorWrapperProps) {
-  return <CodeEditor roomId={roomId} />; // prop forwarding
+export function EditorWrapper({ roomId, onStatusChange }: EditorWrapperProps) {
+  return <CodeEditor roomId={roomId} onStatusChange={onStatusChange} />; // prop forwarding
 }

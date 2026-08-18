@@ -1,6 +1,7 @@
 "use client"
 import {useParams} from "next/navigation";
 import { EditorWrapper } from "@/features/Editor/EditorWrapper";
+import { useState } from "react";
 
 type PageProps = {
   params: {
@@ -10,6 +11,9 @@ type PageProps = {
 
 export default function App() {
   const { roomId } = useParams<{ roomId: string }>();
+
+  const [status, setStatus] = useState("connecting");
+
   return (
     <div className="h-screen bg-zinc-950 flex flex-col overflow-hidden">
       {/* Header */}
@@ -39,13 +43,19 @@ export default function App() {
 
         {/* Editor Container */}
         <div className="flex-1 bg-zinc-950">
-          <EditorWrapper roomId={roomId}/>
+          <EditorWrapper roomId={roomId} onStatusChange={setStatus}/>
         </div>
       </div>
 
       {/* Footer */}
       <div className="h-6 bg-zinc-900 border-t border-zinc-800 px-4 flex items-center justify-between text-[10px] text-zinc-500">
-        <span>Ready</span>
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${
+            status === 'connected' ? 'bg-green-500' : 
+            status === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'
+          }`} />
+          <span className="capitalize">{status}</span>
+        </div>
         <span>Room: {roomId} </span>
         <span>Language: JavaScript</span>
       </div>

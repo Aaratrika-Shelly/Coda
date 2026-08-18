@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "HOST=localhost PORT=1234 node ./node_modules/y-websocket/bin/server.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,8 @@
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
     "monaco-editor": "^0.52.2",
+    "mongoose": "^9.9.3",
+    "ws": "^8.21.3",
     "y-websocket": "1.5.0",
     "yjs": "13.6.20"
   }
